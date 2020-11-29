@@ -34,7 +34,7 @@ get_mac_address <- function () {
 #'
 #' @param query list, query strings
 #'
-#' @return list, server response. Must contains an entry named as "status".
+#' @return list, server response that is formatted as JSON object
 #'
 #' @importFrom httr POST
 #' @importFrom jsonlite parse_json
@@ -50,7 +50,8 @@ send_request <- function (query = list()) {
   # send request and receive response
 
   response <- httr::POST(
-    url = "https://www.magadlal.com/exam/api",
+    url = "http://localhost/www/magadlal.com/exam/api",
+  #  url = "https://www.magadlal.com/exam/api",
     body = query,
     encode = "form"
   )
@@ -63,16 +64,28 @@ send_request <- function (query = list()) {
 
   # convert response to list
 
-  response <- jsonlite::parse_json(rawToChar(response$content))
-
-  # confirm whether request and response is valid
-
-  if (response$status != "success") {
-    stop(response$status)
+  response <- try(expr = {
+    jsonlite::parse_json(rawToChar(response$content))
+  }, silent = TRUE)
+  if (inherits(response, "try-error")) {
+    stop("API error")
   }
 
   # response
 
   response
 
+}
+
+#' Loaded Packages
+#'
+#' @return character vector, loaded packages
+#'
+#' @noRd
+
+loaded_packages <- function () {
+  pckgs <- search()
+  pckgs <- pckgs[grep(pattern = "package:", x = pckgs)]
+  pckgs <- sub(pattern = "package:", replacement = "", x = pckgs)
+  pckgs[!{pckgs %in% c("MASS", "magadlalcomexam", "stats", "graphics", "grDevices", "utils", "datasets", "methods", "base")}]
 }
