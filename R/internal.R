@@ -50,8 +50,7 @@ send_request <- function (query = list()) {
   # send request and receive response
 
   response <- httr::POST(
-    url = "http://localhost/www/magadlal.com/exam/api",
-  #  url = "https://www.magadlal.com/exam/api",
+    url = "https://www.magadlal.com/exam/api",
     body = query,
     encode = "form"
   )
