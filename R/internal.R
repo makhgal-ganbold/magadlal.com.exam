@@ -6,7 +6,7 @@
 #'
 #' @noRd
 
-get_mac_address <- function () {
+.identification <- function () {
   mac_addr <- try(expr = {
     if (Sys.info()['sysname'] == "Windows") {
       command <- "getmac"
@@ -25,7 +25,7 @@ get_mac_address <- function () {
     mac_addr
   }, silent = TRUE)
   if (inherits(mac_addr, "try-error")) {
-    stop("Could not determine your Mac Address.")
+    stop("Could not determine your computers Mac Address.")
   }
   mac_addr
 }
@@ -41,11 +41,11 @@ get_mac_address <- function () {
 #'
 #' @noRd
 
-send_request <- function (query = list()) {
+.interface <- function (query = list()) {
 
   # attach Mac Address
 
-  query$mac <- get_mac_address()
+  query$mac <- .identification()
 
   # send request and receive response
 
@@ -67,7 +67,7 @@ send_request <- function (query = list()) {
     jsonlite::parse_json(rawToChar(response$content))
   }, silent = TRUE)
   if (inherits(response, "try-error")) {
-    stop("API error")
+    stop("An unknown error occured on the server.")
   }
 
   # response
@@ -82,7 +82,7 @@ send_request <- function (query = list()) {
 #'
 #' @noRd
 
-loaded_packages <- function () {
+.loaded.packages <- function () {
   pckgs <- search()
   pckgs <- pckgs[grep(pattern = "package:", x = pckgs)]
   pckgs <- sub(pattern = "package:", replacement = "", x = pckgs)

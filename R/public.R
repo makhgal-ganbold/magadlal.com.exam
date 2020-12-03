@@ -3,47 +3,47 @@
 #' It begins an online exam session on \href{https://www.magadlal.com/}{www.magadlal.com}.
 #'
 #' @param sisi_id string, the SISI ID of the student
-#' @param password string, the exam password which is assigned to the student from \href{https://www.magadlal.com/}{www.magadlal.com}
+#' @param password string, the exam password that is assigned to the student from \href{https://www.magadlal.com/}{www.magadlal.com}
 #' @param exam_id integer, exam ID on \href{https://www.magadlal.com/}{www.magadlal.com}
 #'
-#' @return \code{NULL}. It prints a response message from the server.
+#' @return It returns a server response message.
 #'
-#' @seealso \code{\link{problem}}, \code{\link{check}}
+#' @seealso \code{\link{get_problem}}, \code{\link{check_solution}}
 #'
 #' @export
 
-begin <- function (sisi_id, password, exam_id) {
-  response <- send_request(list(operation = "begin", sisi_id = sisi_id, password = password, exam_id = exam_id))
-  message(response$message)
+begin_exam <- function (sisi_id, password, exam_id) {
+  response <- .interface(list(operation = "begin_exam", sisi_id = sisi_id, password = password, exam_id = exam_id))
+  response$message
 }
 
 #' Get Problem
 #'
-#' Get a new or current problem which is assigned to a student from the server.
+#' Get a new or current problem is assigned to a student by the server.
 #'
-#' @param sisi_id string, the SISI ID of the student
+#' @param sisi_id string, a SISI ID of a student
 #' @param exam_id integer, exam ID on \href{https://www.magadlal.com/}{www.magadlal.com}
-#' @param prevent_new_problem If \code{TRUE}, it prevents from getting a new problem accidentally and attempts to get the problem which is currently assigned.
+#' @param prevent_new_problem If \code{TRUE}, it prevents from getting a new problem accidentally and attempts to get the problem which is assigned recently.
 #'
-#' @return A list which is contains a new or current problem is assigned to a student from the server.
+#' @return A list which contains a new or current problem is assigned to a student by the server.
 #'
-#' @seealso \code{\link{begin}}, \code{\link{check}}
+#' @seealso \code{\link{begin_exam}}, \code{\link{check_solution}}
 #'
 #' @export
 
-problem <- function (sisi_id, exam_id, prevent_new_problem = FALSE) {
+get_problem <- function (sisi_id, exam_id, prevent_new_problem = FALSE) {
   if (isTRUE(prevent_new_problem)) {
     prevent_new_problem <- "true"
   } else if (isFALSE(prevent_new_problem)) {
     prevent_new_problem <- "false"
   } else {
-    stop("Invalid value supplied for the argument prevent_new_problem")
+    stop("Invalid value has been supplied for the argument prevent_new_problem")
   }
-  response <- send_request(list(operation = "problem", sisi_id = sisi_id, exam_id = exam_id, prevent_new_problem = prevent_new_problem))
-  message(response$message)
+  response <- .interface(list(operation = "get_problem", sisi_id = sisi_id, exam_id = exam_id, prevent_new_problem = prevent_new_problem))
   if (!is.null(response$problem)) {
-    return(list(problem = response$problem, expire_at = response$expire_at))
+    return(response)
   }
+  response$message
 }
 
 #' Check Problem Solution
@@ -54,36 +54,56 @@ problem <- function (sisi_id, exam_id, prevent_new_problem = FALSE) {
 #' @param exam_id integer, exam ID on \href{https://www.magadlal.com/}{www.magadlal.com}
 #' @param expr an expression, an R code which is a solution
 #'
-#' @return Typically, either \code{TRUE} or a string describing the differences between students answer and the correct answer of the assigned problem from the server. When an error occurs, \code{NULL} is returned.
+#' @return Typically, server response message or a string describing the differences between students answer and the correct answer of the assigned problem from the server. If an error is detected, the error message is returned.
 #'
-#' @seealso \code{\link{begin}}, \code{\link{problem}}
+#' @seealso \code{\link{begin_exam}}, \code{\link{get_problem}}
 #'
 #' @export
 
-check <- function (sisi_id, exam_id, expr) {
-  response <- send_request(list(operation = "check", sisi_id = sisi_id, exam_id = exam_id))
+check_solution <- function (sisi_id, exam_id, expr) {
+  response <- .interface(list(operation = "check_solution", sisi_id = sisi_id, exam_id = exam_id))
   if (response$message != "") {
-    message(response$message)
-    return(NULL)
+    return(response$message)
   }
-  if (response$dependencies != "") {
-    response$dependencies <- strsplit(x = response$dependencies, split = ",")[[1]]
-    response$dependencies <- setdiff(response$dependencies, .packages(all.available = TRUE))
-    if (length(response$dependencies) > 0) {
-      utils::install.packages(pkgs = response$dependencies, dependencies = TRUE)
+  (function () {
+    .globenv <- globalenv()
+    .vars <- ls(all.names = FALSE, envir = .globenv)
+    .cache <- list()
+    for (var in .vars) {
+      .cache[[var]] <- .globenv[[var]]
     }
-  }
-  true_answer <- try(expr = {
-    eval(expr = parse(text = response$code), envir = new.env())
-  }, silent = TRUE)
-  if (inherits(true_answer, "try-error")) {
-    message("Could not check your solution. Maybe required packages are not installed.")
-    return(NULL)
-  }
-  result <- all.equal(target = expr, current = true_answer, check.attributes = FALSE)
+    rm(list = ls(all.names = TRUE, envir = .globenv), envir = .globenv)
+    .cache
+  })() -> .varcache
+  result <- tryCatch(expr = {
+    result <- eval(expr = expr, envir = new.env())
+    if (response$dependencies != "") {
+      response$dependencies <- strsplit(x = response$dependencies, split = ",")[[1]]
+      response$dependencies <- setdiff(response$dependencies, .packages(all.available = TRUE))
+      if (length(response$dependencies) > 0) {
+        utils::install.packages(pkgs = response$dependencies, dependencies = TRUE)
+      }
+    }
+    true_answer <- try(expr = {
+      eval(expr = parse(text = response$code), envir = new.env())
+    }, silent = TRUE)
+    if (inherits(true_answer, "try-error")) {
+      stop("Could not check your solution.")
+    }
+    all.equal(target = true_answer, current = result, check.attributes = FALSE)
+  }, error = function(e) {
+    e$message
+  })
+  (function (.cache) {
+    .globenv <- globalenv()
+    .vars <- names(.cache)
+    for (var in .vars) {
+      .cache[[var]] -> .globenv[[var]]
+    }
+  })(.varcache)
   if (isTRUE(result)) {
-    response <- send_request(list(operation = "submit", sisi_id = sisi_id, exam_id = exam_id, code = paste0(deparse(substitute(expr)), collapse = "\n")))
-    message(response$message)
+    response <- .interface(list(operation = "submit_solution", sisi_id = sisi_id, exam_id = exam_id, code = paste0(deparse(substitute(expr)), collapse = "\n")))
+    return(response$message)
   }
   result
 }
