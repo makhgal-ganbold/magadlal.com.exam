@@ -3,7 +3,7 @@
 #' It begins an online exam session on \href{https://www.magadlal.com/}{www.magadlal.com}.
 #'
 #' @param sisi_id string, the SISI ID of the student
-#' @param password string, the exam password which is assigned to the student from \href{https://www.magadlal.com/}{www.magadlal.com}
+#' @param password string, the exam password that is assigned to the student from \href{https://www.magadlal.com/}{www.magadlal.com}
 #' @param exam_id integer, exam ID on \href{https://www.magadlal.com/}{www.magadlal.com}
 #'
 #' @return \code{NULL}. It prints a response message from the server.
@@ -19,13 +19,13 @@ begin <- function (sisi_id, password, exam_id) {
 
 #' Get Problem
 #'
-#' Get a new or current problem which is assigned to a student from the server.
+#' Get a new or current problem is assigned to a student by the server.
 #'
-#' @param sisi_id string, the SISI ID of the student
+#' @param sisi_id string, a SISI ID of a student
 #' @param exam_id integer, exam ID on \href{https://www.magadlal.com/}{www.magadlal.com}
-#' @param prevent_new_problem If \code{TRUE}, it prevents from getting a new problem accidentally and attempts to get the problem which is currently assigned.
+#' @param prevent_new_problem If \code{TRUE}, it prevents from getting a new problem accidentally and attempts to get the problem which is assigned recently.
 #'
-#' @return A list which is contains a new or current problem is assigned to a student from the server.
+#' @return A list which contains a new or current problem is assigned to a student by the server.
 #'
 #' @seealso \code{\link{begin}}, \code{\link{check}}
 #'
@@ -37,7 +37,7 @@ problem <- function (sisi_id, exam_id, prevent_new_problem = FALSE) {
   } else if (isFALSE(prevent_new_problem)) {
     prevent_new_problem <- "false"
   } else {
-    stop("Invalid value supplied for the argument prevent_new_problem")
+    stop("Invalid value has been supplied for the argument prevent_new_problem")
   }
   response <- send_request(list(operation = "problem", sisi_id = sisi_id, exam_id = exam_id, prevent_new_problem = prevent_new_problem))
   message(response$message)

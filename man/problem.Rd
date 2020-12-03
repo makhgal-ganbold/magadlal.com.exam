@@ -7,17 +7,17 @@
 problem(sisi_id, exam_id, prevent_new_problem = FALSE)
 }
 \arguments{
-\item{sisi_id}{string, the SISI ID of the student}
+\item{sisi_id}{string, a SISI ID of a student}
 
 \item{exam_id}{integer, exam ID on \href{https://www.magadlal.com/}{www.magadlal.com}}
 
-\item{prevent_new_problem}{If \code{TRUE}, it prevents from getting a new problem accidentally and attempts to get the problem which is currently assigned.}
+\item{prevent_new_problem}{If \code{TRUE}, it prevents from getting a new problem accidentally and attempts to get the problem which is assigned recently.}
 }
 \value{
-A list which is contains a new or current problem is assigned to a student from the server.
+A list which contains a new or current problem is assigned to a student by the server.
 }
 \description{
-Get a new or current problem which is assigned to a student from the server.
+Get a new or current problem is assigned to a student by the server.
 }
 \seealso{
 \code{\link{begin}}, \code{\link{check}}

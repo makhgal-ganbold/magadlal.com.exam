@@ -25,7 +25,7 @@ get_mac_address <- function () {
     mac_addr
   }, silent = TRUE)
   if (inherits(mac_addr, "try-error")) {
-    stop("Could not determine your Mac Address.")
+    stop("Could not determine your computers Mac Address.")
   }
   mac_addr
 }
@@ -67,7 +67,7 @@ send_request <- function (query = list()) {
     jsonlite::parse_json(rawToChar(response$content))
   }, silent = TRUE)
   if (inherits(response, "try-error")) {
-    stop("API error")
+    stop("An unknown error occured on the server.")
   }
 
   # response

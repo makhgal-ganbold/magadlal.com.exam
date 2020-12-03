@@ -9,7 +9,7 @@ begin(sisi_id, password, exam_id)
 \arguments{
 \item{sisi_id}{string, the SISI ID of the student}
 
-\item{password}{string, the exam password which is assigned to the student from \href{https://www.magadlal.com/}{www.magadlal.com}}
+\item{password}{string, the exam password that is assigned to the student from \href{https://www.magadlal.com/}{www.magadlal.com}}
 
 \item{exam_id}{integer, exam ID on \href{https://www.magadlal.com/}{www.magadlal.com}}
 }
