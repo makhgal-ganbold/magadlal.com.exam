@@ -14,7 +14,7 @@ begin_exam(sisi_id, password, exam_id)
 \item{exam_id}{integer, exam ID on \href{https://www.magadlal.com/}{www.magadlal.com}}
 }
 \value{
-It returns a server response message.
+It returns a server response message or an error message.
 }
 \description{
 It begins an online exam session on \href{https://www.magadlal.com/}{www.magadlal.com}.

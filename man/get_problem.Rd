@@ -14,7 +14,7 @@ get_problem(sisi_id, exam_id, prevent_new_problem = FALSE)
 \item{prevent_new_problem}{If \code{TRUE}, it prevents from getting a new problem accidentally and attempts to get the problem which is assigned recently.}
 }
 \value{
-A list which contains a new or current problem is assigned to a student by the server.
+A list which contains a new or current problem is assigned to a student by the server. If an error is detected, the error message is returned.
 }
 \description{
 Get a new or current problem is assigned to a student by the server.
