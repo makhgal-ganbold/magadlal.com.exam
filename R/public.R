@@ -112,6 +112,15 @@ check_solution <- function (sisi_id, exam_id, expr) {
     if (response$message != "") {
       stop(response$message)
     }
+    restricted_functions <- response$restricted_functions
+    if (restricted_functions != "") {
+      restricted_functions <- strsplit(x = restricted_functions, split = ",")[[1]]
+      for (restricted_function in restricted_functions) {
+        if (grepl(pattern = paste0("[^a-zA-Z0-9._]*",restricted_function,"[ ]*\\("), x = paste0(substitute(expr), collapse = " "))) {
+          stop("You have used a restricted function.")
+        }
+      }
+    }
     if (response$dependencies != "") {
       response$dependencies <- strsplit(x = response$dependencies, split = ",")[[1]]
       response$dependencies <- setdiff(response$dependencies, .packages(all.available = TRUE))
@@ -119,13 +128,26 @@ check_solution <- function (sisi_id, exam_id, expr) {
         utils::install.packages(pkgs = response$dependencies, dependencies = TRUE)
       }
     }
-    true_answer <- try(expr = {
-      eval(expr = parse(text = response$code), envir = new.env())
-    }, silent = TRUE)
-    if (inherits(true_answer, "try-error")) {
-      stop("Could not check your solution.")
+    if (response$test_mode == 'test') {
+      result <- try(expr = {
+        eval(expr = str2expression(paste(expr, response$code, sep = "; ")), envir = new.env())
+      }, silent = TRUE)
+      if (inherits(result, "try-error")) {
+        stop("An error has occured. Please check if your solution meets requirements of the problem.")
+      }
+      if (isFALSE(result)) {
+        stop("Your solution couldn't pass the test. If the result of your code is random, please try again.")
+      }
+    } else { # 'match'
+      true_answer <- try(expr = {
+        eval(expr = parse(text = response$code), envir = new.env())
+      }, silent = TRUE)
+      if (inherits(true_answer, "try-error")) {
+        stop("Could not check your solution.")
+      }
+      result <- all.equal(target = true_answer, current = result, check.attributes = FALSE)
     }
-    all.equal(target = true_answer, current = result, check.attributes = FALSE)
+    result
   }, error = function(e) {
     e$message
   })
