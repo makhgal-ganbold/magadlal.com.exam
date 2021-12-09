@@ -3,7 +3,7 @@
 #' It begins an online exam session on \href{https://www.magadlal.com/}{www.magadlal.com}.
 #'
 #' @param sisi_id string, the SISI ID of the student
-#' @param password string, the exam password that is assigned to the student from \href{https://www.magadlal.com/}{www.magadlal.com}
+#' @param password string, the exam password that is assigned to the student by \href{https://www.magadlal.com/}{www.magadlal.com}
 #' @param exam_id integer, exam ID on \href{https://www.magadlal.com/}{www.magadlal.com}
 #'
 #' @return It returns a server response message or an error message.
@@ -29,7 +29,7 @@ begin_exam <- function (sisi_id, password, exam_id) {
 #' @param exam_id integer, exam ID on \href{https://www.magadlal.com/}{www.magadlal.com}
 #' @param prevent_new_problem If \code{TRUE}, it prevents from getting a new problem accidentally and attempts to get the problem which is assigned recently.
 #'
-#' @return A list which contains a new or current problem is assigned to a student by the server. If an error is detected, the error message is returned.
+#' @return A list that contains a new or current problem is assigned to a student by the server. If an error is detected, it returns the error message.
 #'
 #' @seealso \code{\link{begin_exam}}, \code{\link{check_solution}}
 #'
@@ -42,7 +42,7 @@ get_problem <- function (sisi_id, exam_id, prevent_new_problem = FALSE) {
     } else if (isFALSE(prevent_new_problem)) {
       prevent_new_problem <- "false"
     } else {
-      stop("Invalid value has been supplied for the argument prevent_new_problem")
+      stop("You have supplied an invalid value for the argument prevent_new_problem.")
     }
     response <- .interface(list(operation = "get_problem", sisi_id = sisi_id, exam_id = exam_id, prevent_new_problem = prevent_new_problem))
     if (is.null(response$problem)) {
@@ -56,13 +56,13 @@ get_problem <- function (sisi_id, exam_id, prevent_new_problem = FALSE) {
 
 #' Check Problem Solution
 #'
-#' This function checks a solution and submits it to the server when the solution is correct.
+#' This function checks a solution and submits it to the server when it is correct.
 #'
 #' @param sisi_id string, the SISI ID of the student
 #' @param exam_id integer, exam ID on \href{https://www.magadlal.com/}{www.magadlal.com}
 #' @param expr an expression, an R code which is a solution
 #'
-#' @return Typically, server response message or a string describing the differences between students answer and the correct answer of the assigned problem from the server. If an error is detected, the error message is returned.
+#' @return Typically, a server response message or a string describing the differences between a student's answer and the correct answer of the assigned problem from the server. If an error is detected, it returns the error message.
 #'
 #' @seealso \code{\link{begin_exam}}, \code{\link{get_problem}}
 #'
@@ -133,7 +133,7 @@ check_solution <- function (sisi_id, exam_id, expr) {
         eval(expr = str2expression(paste(expr, response$code, sep = "; ")), envir = new.env())
       }, silent = TRUE)
       if (inherits(result, "try-error")) {
-        stop("An error has occured. Please check if your solution meets requirements of the problem.")
+        stop("An error has occurred. Please check if your solution meets the requirements of the problem.")
       }
       if (isFALSE(result)) {
         stop("Your solution couldn't pass the test. If the result of your code is random, please try again.")

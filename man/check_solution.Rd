@@ -14,10 +14,10 @@ check_solution(sisi_id, exam_id, expr)
 \item{expr}{an expression, an R code which is a solution}
 }
 \value{
-Typically, server response message or a string describing the differences between students answer and the correct answer of the assigned problem from the server. If an error is detected, the error message is returned.
+Typically, a server response message or a string describing the differences between a student's answer and the correct answer of the assigned problem from the server. If an error is detected, it returns the error message.
 }
 \description{
-This function checks a solution and submits it to the server when the solution is correct.
+This function checks a solution and submits it to the server when it is correct.
 }
 \seealso{
 \code{\link{begin_exam}}, \code{\link{get_problem}}

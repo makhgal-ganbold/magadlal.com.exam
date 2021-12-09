@@ -25,7 +25,7 @@
     mac_addr
   }, silent = TRUE)
   if (inherits(mac_addr, "try-error")) {
-    stop("Could not determine your computers Mac Address.")
+    stop("It could not determine your computer's Mac Address.")
   }
   mac_addr
 }

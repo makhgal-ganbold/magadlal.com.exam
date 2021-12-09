@@ -5,8 +5,8 @@ Version: 0.3.0
 Date: 2020-05-27
 Authors@R: person("Makhgal", "Ganbold", email = "makhgal@num.edu.mn", role = c("aut", "cre"))
 Maintainer: Makhgal Ganbold <makhgal@num.edu.mn>
-Description: The online exam tool for the web site \href{https://www.magadlal.com/}{www.magadlal.com}.
+Description: It is the online exam tool for the website \href{https://www.magadlal.com/}{www.magadlal.com}.
 License: GPL
 Encoding: UTF-8
 Imports: httr, jsonlite, stringr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
