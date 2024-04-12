@@ -43,6 +43,8 @@
 
 .interface <- function (query = list()) {
 
+  query$sender = "my-script";
+
   # attach Mac Address
 
   query$mac <- .identification()
@@ -50,8 +52,8 @@
   # send request and receive response
 
   response <- httr::POST(
-    url = "https://www.magadlal.com/exam/api",
-#    url = "http://localhost/www/magadlal.com/exam/api",
+    url = "https://www.magadlal.com/exam/r",
+#    url = "http://localhost/www/magadlal.com/exam/r",
     body = query,
     encode = "form"
   )

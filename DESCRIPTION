@@ -1,12 +1,12 @@
 Package: magadlal.com.exam
 Type: Package
 Title: Online Exam Tool for www.magadlal.com
-Version: 0.3.0
-Date: 2020-05-27
+Version: 0.4.0
+Date: 2024-04-12
 Authors@R: person("Makhgal", "Ganbold", email = "makhgal@num.edu.mn", role = c("aut", "cre"))
 Maintainer: Makhgal Ganbold <makhgal@num.edu.mn>
 Description: It is the online exam tool for the website \href{https://www.magadlal.com/}{www.magadlal.com}.
 License: GPL
 Encoding: UTF-8
 Imports: httr, jsonlite, stringr
-RoxygenNote: 7.1.2
+RoxygenNote: 7.3.1

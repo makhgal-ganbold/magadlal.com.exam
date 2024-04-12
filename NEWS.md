@@ -1,3 +1,9 @@
+# 0.4.0
+
+2024-04-12
+
+* Modified the internal function due to the changes on the server.
+
 # 0.3.0
 
 2021-05-27
