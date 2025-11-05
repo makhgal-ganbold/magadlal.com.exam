@@ -1,3 +1,9 @@
+# 1.0.0
+
+2025-11-05
+
+* Changed the entire rule to check the solution.
+
 # 0.4.0
 
 2024-04-12

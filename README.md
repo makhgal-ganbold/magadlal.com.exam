@@ -14,7 +14,9 @@ devtools::install_github("makhgal-ganbold/magadlal.com.exam")
 
 ## Usage
 
-We publish detailed instructions about package usage when an online exam is assigned to students studying a course such as [Statistical Programming with R](https://www.magadlal.com/courses/6.html).
+``` r
+magadlal.com.exam::submit_solution(uid = "UNIQUE IDENTIFICATION NUMBER", expr = {R CODE})
+```
 
 ## Author
 

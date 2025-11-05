@@ -52,8 +52,8 @@
   # send request and receive response
 
   response <- httr::POST(
-    url = "https://www.magadlal.com/exam/r",
-#    url = "http://localhost/www/magadlal.com/exam/r",
+#    url = "https://www.magadlal.com/exam/r",
+    url = "http://localhost/www/magadlal.com/exam/r",
     body = query,
     encode = "form"
   )
@@ -66,16 +66,17 @@
 
   # convert response to list
 
-  response <- try(expr = {
-    jsonlite::parse_json(rawToChar(response$content))
+  response$content = rawToChar(response$content)
+  result <- try(expr = {
+    jsonlite::parse_json(response$content)
   }, silent = TRUE)
-  if (inherits(response, "try-error")) {
-    stop("An unknown error occured on the server.")
+  if (inherits(result, "try-error")) {
+    stop(response$content)
   }
 
   # response
 
-  response
+  result
 
 }
 
