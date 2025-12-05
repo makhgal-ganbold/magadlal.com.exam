@@ -52,8 +52,8 @@
   # send request and receive response
 
   response <- httr::POST(
-#    url = "https://www.magadlal.com/exam/r",
-    url = "http://localhost/www/magadlal.com/exam/r",
+    url = "https://www.magadlal.com/exam/r",
+#    url = "http://localhost/www/magadlal.com/exam/r",
     body = query,
     encode = "form"
   )
