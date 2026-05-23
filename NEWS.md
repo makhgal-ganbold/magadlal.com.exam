@@ -1,3 +1,9 @@
+# 2.0.0
+
+2026-05-23
+
+* Added the limitation for the R code length and its output size.
+
 # 1.0.0
 
 2025-11-05

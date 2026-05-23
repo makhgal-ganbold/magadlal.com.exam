@@ -13,6 +13,10 @@
 #' @export
 
 submit_solution <- function (uid, expr) {
+  expr_str <- paste0(deparse(substitute(expr)), collapse = "\n")
+  if (nchar(expr_str) > 4096) {
+    stop("The written code is too long.")
+  }
   response <- .interface(list(operation = "verify", uid = uid))
   if (response$message != "VERIFIED") {
     stop(response$message)
@@ -59,11 +63,14 @@ submit_solution <- function (uid, expr) {
     evalq(expr = expr, envir = new.env()) |>
       jsonlite::as_gzjson_b64() ->
       b64_gz_json
+    if (nchar(b64_gz_json) > 4096) {
+      stop("The output is too long.")
+    }
     grDevices::dev.off()
     .interface(list(
       operation = "submit",
       uid = uid,
-      solution = paste0(deparse(substitute(expr)), collapse = "\n"),
+      solution = expr_str,
       b64_gz_json = b64_gz_json
     )) ->
       response
